@@ -1,0 +1,4 @@
+pygame>=2.0.0
+
+# py2exe==0.10.1.0
+pyinstaller==4.1
