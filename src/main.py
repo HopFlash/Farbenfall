@@ -44,7 +44,7 @@ class Intro(object):
     def render(self):
         background = pygame.Surface(self.gameobj.screen.get_size())
         background = background.convert()
-        background.fill((150, 250, 250))
+        background.fill((255, 255, 255))
         
         for charOffsetX, textImage in self.introTextImages:
             textpos = textImage.get_rect(x=background.get_width()/2 - self.introTextLength/2 + charOffsetX, centery=background.get_height()/2)
