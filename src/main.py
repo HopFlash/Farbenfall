@@ -76,14 +76,11 @@ class Intro(object):
         self.gameobj.screen.blit(background, (0, 0))
 
 class ffSprites(pygame.sprite.Sprite):
-    def __init__(self, gameobj, filename='waterfall.png'):
+    def __init__(self, gameobj, filename):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         self.gameobj = gameobj
         self.image, self.rect = load_image(filename)
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
-        self.rect.topleft = 10, 10
 
     def changecolor(self, newcolor):
         pxarray = pygame.PixelArray(self.image)
