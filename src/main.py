@@ -3,10 +3,33 @@ It's development started in the GameJam "My First Game Jam: Winter 2021".
 https://itch.io/jam/my-first-game-jam-winter-2021
 
 """
-
+import os
 import pygame
-from pygame.locals import QUIT
+from pygame.locals import QUIT, RLEACCEL, KEYDOWN, K_ESCAPE
 
+
+def load_image(name):
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname).convert_alpha()
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
+    return image, image.get_rect()
+
+def load_image_Colorkey(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname).convert_alpha()
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
+    image = image.convert()
+    if colorkey is not None:
+        if colorkey == -1:
+            colorkey = image.get_at((0, 0))
+        image.set_colorkey(colorkey, RLEACCEL)
+    return image, image.get_rect()
 
 class Intro(object):
     """
@@ -53,6 +76,16 @@ class Intro(object):
         self.gameobj.screen.blit(background, (0, 0))
 
 
+class Waterfall(pygame.sprite.Sprite):
+    def __init__(self, gameobj):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+        self.gameobj = gameobj
+        self.image, self.rect = load_image('Waterfall.png')
+        screen = pygame.display.get_surface()
+        self.area = screen.get_rect()
+        self.rect.topleft = 10, 10
+
 class Game(object):
     """
     docstring
@@ -68,6 +101,9 @@ class Game(object):
 
         self.intro = Intro(self)
 
+        w1 = Waterfall(self)
+        self.allWaterfallSprites = pygame.sprite.RenderPlain((w1))
+
     def run(self):
 
         while 1:
@@ -77,6 +113,9 @@ class Game(object):
                     return
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     return
+
+            self.allWaterfallSprites.update()
+            self.allWaterfallSprites.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(60)
 
