@@ -82,10 +82,6 @@ class ffSprites(pygame.sprite.Sprite):
         self.gameobj = gameobj
         self.image, self.rect = load_image(filename)
 
-    def changecolor(self, newcolor):
-        pxarray = pygame.PixelArray(self.image)
-        pxarray.replace((76, 69, 207), newcolor, distance=0)
-        self.image = pxarray.make_surface()
 
     def resize(self, newX, newY):
         self.image = pygame.transform.scale(self.image, (newX, newY))
@@ -101,8 +97,11 @@ class Waterfall(ffSprites):
 
 
 class Sponge(ffSprites):
-    pass
 
+    def changecolor(self, newcolor):
+        pxarray = pygame.PixelArray(self.image)
+        pxarray.replace((255, 255, 255), newcolor, distance=0)
+        self.image = pxarray.make_surface()
 
 class Game(object):
     """
