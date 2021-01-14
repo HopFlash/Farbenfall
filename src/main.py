@@ -81,20 +81,32 @@ class ffSprites(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.gameobj = gameobj
         self.image, self.rect = load_image(filename)
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.moved = True
 
+    def update(self):
+        super().update()
+        if self.moved:
+            self.rect.topleft = self.x, self.y
+            self.moved = False
 
     def resize(self, newX, newY):
         self.image = pygame.transform.scale(self.image, (newX, newY))
+        self.rect = self.image.get_rect()
 
     def resizeProp(self, newScale):
         x = self.image.get_width()
         y = self.image.get_height()
         self.resize(round(x*newScale), round(y*newScale))
 
+    def moveTo(self, newX, newY):
+        self.x = newX
+        self.y = newY
+        self.moved = True
 
 class Waterfall(ffSprites):
     pass
-
 
 class Sponge(ffSprites):
 
@@ -102,6 +114,12 @@ class Sponge(ffSprites):
         pxarray = pygame.PixelArray(self.image)
         pxarray.replace((255, 255, 255), newcolor, distance=0)
         self.image = pxarray.make_surface()
+
+    def update(self):
+        super().update()
+        if pygame.mouse.get_focused():
+            newX, newY = pygame.mouse.get_pos()
+            self.rect.center = newX, newY
 
 class Game(object):
     """
@@ -118,19 +136,22 @@ class Game(object):
 
         self.intro = Intro(self)
 
+        self.spritesDict = {}
+
         sponge = Sponge(self, 'sponge.png')
-        sponge.resizeProp(0.25)
-#        w_generic = Waterfall(self)
+        sponge.changecolor((10, 210, 10))
+        sponge.resizeProp(0.15)
+        self.spritesDict['sponge'] = sponge
+
         w_blue = Waterfall(self, 'waterfall_blue.png')
-        w_blue.rect.topleft = 20, 20
+        w_blue.moveTo(20, 20)
         w_blue.resizeProp(0.5)
         w_green = Waterfall(self, 'waterfall_green.png')
-        w_green.rect.topleft = 170, 20
+        w_green.moveTo(170, 20)
         w_green.resizeProp(0.5)
         w_red = Waterfall(self, 'waterfall_red.png')
-        w_red.rect.topleft = 320, 20
+        w_red.moveTo(320, 20)
         w_red.resizeProp(0.5)
-        sponge.changecolor((10, 210, 10))
 
         self.allSprites = pygame.sprite.RenderPlain((sponge, w_blue, w_green, w_red))
 
