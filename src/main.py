@@ -75,6 +75,8 @@ class Game(object):
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
+                elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                    return
             pygame.display.flip()
             self.clock.tick(60)
 
