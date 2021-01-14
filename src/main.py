@@ -136,7 +136,7 @@ class Game(object):
         w_red.resizeProp(0.5)
         sponge.changecolor((10, 210, 10))
 
-        self.allWaterfallSprites = pygame.sprite.RenderPlain((sponge, w_blue, w_green, w_red))
+        self.allSprites = pygame.sprite.RenderPlain((sponge, w_blue, w_green, w_red))
 
     def run(self):
 
@@ -148,8 +148,8 @@ class Game(object):
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     return
 
-            self.allWaterfallSprites.update()
-            self.allWaterfallSprites.draw(self.screen)
+            self.allSprites.update()
+            self.allSprites.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(60)
 
