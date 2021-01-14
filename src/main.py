@@ -140,6 +140,8 @@ class Game(object):
 
     def run(self):
 
+        pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_HAND)
+
         while 1:
             self.intro.render()
             for event in pygame.event.get():
