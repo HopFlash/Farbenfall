@@ -75,16 +75,37 @@ class Intro(object):
 
         self.gameobj.screen.blit(background, (0, 0))
 
-
-class Waterfall(pygame.sprite.Sprite):
-    def __init__(self, gameobj):
+class ffSprites(pygame.sprite.Sprite):
+    def __init__(self, gameobj, filename='waterfall.png'):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         self.gameobj = gameobj
-        self.image, self.rect = load_image('Waterfall.png')
+        self.image, self.rect = load_image(filename)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.rect.topleft = 10, 10
+
+    def changecolor(self, newcolor):
+        pxarray = pygame.PixelArray(self.image)
+        pxarray.replace((76, 69, 207), newcolor, distance=0)
+        self.image = pxarray.make_surface()
+
+    def resize(self, newX, newY):
+        self.image = pygame.transform.scale(self.image, (newX, newY))
+
+    def resizeProp(self, newScale):
+        x = self.image.get_width()
+        y = self.image.get_height()
+        self.resize(round(x*newScale), round(y*newScale))
+
+
+class Waterfall(ffSprites):
+    pass
+
+
+class Sponge(ffSprites):
+    pass
+
 
 class Game(object):
     """
@@ -101,8 +122,21 @@ class Game(object):
 
         self.intro = Intro(self)
 
-        w1 = Waterfall(self)
-        self.allWaterfallSprites = pygame.sprite.RenderPlain((w1))
+        sponge = Sponge(self, 'sponge.png')
+        sponge.resizeProp(0.25)
+#        w_generic = Waterfall(self)
+        w_blue = Waterfall(self, 'waterfall_blue.png')
+        w_blue.rect.topleft = 20, 20
+        w_blue.resizeProp(0.5)
+        w_green = Waterfall(self, 'waterfall_green.png')
+        w_green.rect.topleft = 170, 20
+        w_green.resizeProp(0.5)
+        w_red = Waterfall(self, 'waterfall_red.png')
+        w_red.rect.topleft = 320, 20
+        w_red.resizeProp(0.5)
+        sponge.changecolor((10, 210, 10))
+
+        self.allWaterfallSprites = pygame.sprite.RenderPlain((sponge, w_blue, w_green, w_red))
 
     def run(self):
 
