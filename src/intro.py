@@ -102,9 +102,6 @@ class IntroButton(FFImageSprites):
 
         self.font = pygame.font.Font('./data/BRLNSDB.TTF', 75)
 
-#        self.image = pygame.Surface((100, 50), flags=SRCALPHA)
-#        self.image.fill((0, 0, 255))
-#        self.rect = self.image.get_rect()
         textImage = self.font.render(self.text, True, (255, 255, 255))
         textRect = textImage.get_rect()
         textRect.center = self.rect.center
