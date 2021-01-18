@@ -22,8 +22,8 @@ class Intro(pygame.sprite.Sprite):
             IntroQuitButton(self.gameobj, self, 'Quit', self.myGroup)
         ]
         for i, iButton in enumerate(self.introButtons):
-            iButton.rect.top = 400
-            iButton.rect.left = 150 + i * 150
+            iButton.rect.top = 500
+            iButton.rect.left = 400 + i * 150
 
     def update(self, *args, **kwargs) -> None:
         self.image = pygame.Surface(self.gameobj.screen.get_size())

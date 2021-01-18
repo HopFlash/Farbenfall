@@ -32,7 +32,7 @@ class Game(object):
         # the resolution of 800x600 will only be the base and reference window size (perhaps a 16:9 would be better?)
         # when resizing the window or using fullscreen in monitor's native mode the sprite sizes and positioning need
         # to be automatically adjusted
-        self.screen = pygame.display.set_mode((800, 600), flags=displayFlags)
+        self.screen = pygame.display.set_mode((1280, 720), flags=displayFlags)
         # window program title (perhaps later something for version management?)
         pygame.display.set_caption('Farbenfall v0.1')
         # initializing pygames clock system
