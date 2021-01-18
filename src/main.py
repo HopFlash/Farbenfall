@@ -53,10 +53,10 @@ class Game(object):
 
         self.spritesDict = {}
 
-        colorBlock = block.Block(self, 'sponge.png')
+        colorBlock = block.Block(self, 'block.png')
         colorBlock.changecolor((10, 210, 10))
         colorBlock.resizeProp(0.15)
-        self.spritesDict['sponge'] = colorBlock
+        self.spritesDict['block'] = colorBlock
 
         w_blue = waterfall.Waterfall(self, 'waterfall_blue.png')
         w_blue.moveTo(20, 20)
