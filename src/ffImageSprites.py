@@ -2,7 +2,7 @@ import pygame
 import utils
 
 
-class FFSprites(pygame.sprite.Sprite):
+class FFImageSprites(pygame.sprite.Sprite):
     def __init__(self, gameobj, filename):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)

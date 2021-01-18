@@ -1,5 +1,5 @@
-import ffSprites
+import ffImageSprites
 
 
-class Waterfall(ffSprites.FFSprites):
+class Waterfall(ffImageSprites.FFImageSprites):
     pass

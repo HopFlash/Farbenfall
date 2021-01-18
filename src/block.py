@@ -1,8 +1,10 @@
 import pygame
-import ffSprites
+import ffImageSprites
 
 
-class Block(ffSprites.FFSprites):
+class Block(ffImageSprites.FFImageSprites):
+    def __init__(self, gameobj, filename):
+        super().__init__(gameobj, filename)
 
     def changecolor(self, newcolor):
         pxarray = pygame.PixelArray(self.image)
