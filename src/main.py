@@ -24,15 +24,25 @@ class Game(object):
     """
 
     def __init__(self):
+        # initializing the pygame engine
         pygame.init()
         #        displayFlags = pygame.FULLSCREEN | pygame.RESIZABLE
+        # game in window mode and resizeable (later fullscreen mode too)
         displayFlags = pygame.RESIZABLE
+        # the resolution of 800x600 will only be the base and reference window size (perhaps a 16:9 would be better?)
+        # when resizing the window or using fullscreen in monitor's native mode the sprite sizes and positioning need
+        # to be automatically adjusted
         self.screen = pygame.display.set_mode((800, 600), flags=displayFlags)
+        # window program title (perhaps later something for version management?)
         pygame.display.set_caption('Farbenfall v0.1')
+        # initializing pygames clock system
         self.clock = pygame.time.Clock()
+        # an dictionary of userevents to communicate between different classes and scenes
         self.eventDict = initUserEvents()
 
+        # scenes can have a function to check for mouse clicks like button clicks (see event loop)
         self.checkMouseClick = None
+        # saving position when mouse button is down
         self.mouseClickStartPos = None
 
         # TODO: react on window resizing
