@@ -62,7 +62,7 @@ class IntroTitle(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.gameobj = gameobj
         self.parent = parent
-        self.font = pygame.font.Font(None, 128)
+        self.font = pygame.font.Font('./data/BRLNSB.TTF', 128)
 
         introTextImages = []
         textOffset = 0
