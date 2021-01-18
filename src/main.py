@@ -7,8 +7,7 @@ import pygame
 from pygame.locals import QUIT, KEYDOWN, K_ESCAPE
 
 import intro
-import block
-import waterfall
+import playscene
 
 
 def initUserEvents():
@@ -40,35 +39,17 @@ class Game(object):
         # an dictionary of userevents to communicate between different classes and scenes
         self.eventDict = initUserEvents()
 
-        # scenes can have a function to check for mouse clicks like button clicks (see event loop)
-        self.checkMouseClick = None
         # saving position when mouse button is down
         self.mouseClickStartPos = None
+        # every scene has an own event loop
+        self.sceneEventloop = None
 
         # TODO: react on window resizing
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill((255, 255, 255))
 
         self.intro = intro.Intro(self)
-
-        self.spritesDict = {}
-
-        colorBlock = block.Block(self, 'block.png')
-        colorBlock.changecolor((10, 210, 10))
-        colorBlock.resizeProp(0.15)
-        self.spritesDict['block'] = colorBlock
-
-        w_blue = waterfall.Waterfall(self, 'waterfall_blue.png')
-        w_blue.moveTo(20, 20)
-        w_blue.resizeProp(0.5)
-        w_green = waterfall.Waterfall(self, 'waterfall_green.png')
-        w_green.moveTo(170, 20)
-        w_green.resizeProp(0.5)
-        w_red = waterfall.Waterfall(self, 'waterfall_red.png')
-        w_red.moveTo(320, 20)
-        w_red.resizeProp(0.5)
-
-        self.allGameSprites = pygame.sprite.RenderPlain((colorBlock, w_blue, w_green, w_red))
+        self.playfield = playscene.Playscene(self)
 
         self.allActiveSprites = pygame.sprite.RenderPlain()
 
@@ -83,14 +64,13 @@ class Game(object):
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.mouseClickStartPos = pygame.mouse.get_pos()
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    if self.checkMouseClick:
-                        self.checkMouseClick(event)
                 elif event.type == self.eventDict['INTRO_CLICKED']:
                     if event.action == 'PLAY':
                         self.showGame()
                     elif event.action == 'ABOUT':
                         self.showAbout()
+                if self.sceneEventloop:
+                    self.sceneEventloop(event)
 
             self.screen.blit(self.background, (0, 0))
             self.allActiveSprites.update()
@@ -99,19 +79,19 @@ class Game(object):
             self.clock.tick(60)
 
     def resetScene(self):
-        self.checkMouseClick = None
+        self.sceneEventloop = None
         self.allActiveSprites.empty()
 
     def showIntro(self):
         self.resetScene()
         pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
         self.allActiveSprites.add(self.intro)
-        self.checkMouseClick = self.intro.checkMouseClick
+        self.sceneEventloop = self.intro.eventloop
 
     def showGame(self):
         self.resetScene()
         pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_HAND)
-        self.allActiveSprites = self.allGameSprites
+        self.allActiveSprites.add(self.playfield)
 
     def showAbout(self):
         self.resetScene()

@@ -40,6 +40,10 @@ class Intro(pygame.sprite.Sprite):
             if iButton.rect.collidepoint(mouseClickPos):
                 iButton.clicked(event)
 
+    def eventloop(self, event):
+        if event.type == pygame.MOUSEBUTTONUP:
+            self.checkMouseClick(event)
+
 
 class IntroTitle(pygame.sprite.Sprite):
     """
