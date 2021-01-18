@@ -92,6 +92,7 @@ class Game(object):
         self.resetScene()
         pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_HAND)
         self.allActiveSprites.add(self.playfield)
+        self.sceneEventloop = self.playfield.eventloop
 
     def showAbout(self):
         self.resetScene()

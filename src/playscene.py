@@ -43,3 +43,15 @@ class Playscene(pygame.sprite.Sprite):
         self.myGroup.update()
         self.myGroup.draw(self.image)
 
+    def checkMouseClick(self, event):
+        mouseClickPos = pygame.mouse.get_pos()
+        colorblock = self.spritesDict['block']
+        if colorblock.rect.collidepoint(mouseClickPos):
+            colorblock.attached = True
+
+    def eventloop(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.checkMouseClick(event)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.spritesDict['block'].attached = False
+
