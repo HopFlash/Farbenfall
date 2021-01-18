@@ -1,8 +1,8 @@
 import pygame
-import ffImageSprites
+from ffImageSprites import FFImageSprites
 
 
-class Block(ffImageSprites.FFImageSprites):
+class Block(FFImageSprites):
     def __init__(self, gameobj, filename, *groups):
         super().__init__(gameobj, filename, *groups)
         self.attached = False
