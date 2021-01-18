@@ -3,108 +3,19 @@ It's development started in the GameJam "My First Game Jam: Winter 2021".
 https://itch.io/jam/my-first-game-jam-winter-2021
 
 """
-import os
 import pygame
-from pygame.locals import QUIT, RLEACCEL, KEYDOWN, K_ESCAPE
+from pygame.locals import QUIT, KEYDOWN, K_ESCAPE
+
+import intro
+import block
+import waterfall
 
 
-def load_image(name):
-    fullname = os.path.join('data', name)
-    try:
-        image = pygame.image.load(fullname).convert_alpha()
-    except pygame.error as message:
-        print('Cannot load image:', name)
-        raise SystemExit(message)
-    return image, image.get_rect()
-
-def load_image_Colorkey(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    try:
-        image = pygame.image.load(fullname).convert_alpha()
-    except pygame.error as message:
-        print('Cannot load image:', name)
-        raise SystemExit(message)
-    image = image.convert()
-    if colorkey is not None:
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey, RLEACCEL)
-    return image, image.get_rect()
-
-class Intro(object):
-    """
-    docstring
-    """
-
-    def __init__(self, gameobj):
-        self.show = True
-        self.gameobj = gameobj
-        self.font = pygame.font.Font(None, 128)
-        self.text = self.font.render('Farbenfall',  True, (200, 50, 0))
-        self.textStr = 'Farbenfall'
-        colorList = [
-            (148, 0, 211),
-            (148, 0, 211),
-            (75, 0, 130),
-            (0, 0, 255),
-            (0, 255, 0),
-            (0, 255, 0),
-            (255, 255, 0),
-            (255, 127, 0),
-            (255, 0, 0),
-            (255, 0, 0)
-        ]
-        self.introTextImages = []
-        textOffset = 0
-        for i, c in enumerate(self.textStr):
-            charColor = colorList[i]
-            charImage = self.font.render(c, True, charColor)
-            self.introTextImages.append( (textOffset, charImage) )
-            textOffset = textOffset + charImage.get_width() + 3
-        self.introTextLength = textOffset
-
-
-    def render(self):
-        background = pygame.Surface(self.gameobj.screen.get_size())
-        background = background.convert()
-        background.fill((255, 255, 255))
-        
-        for charOffsetX, textImage in self.introTextImages:
-            textpos = textImage.get_rect(x=background.get_width()/2 - self.introTextLength/2 + charOffsetX, centery=background.get_height()/2)
-            background.blit(textImage, textpos)
-
-        self.gameobj.screen.blit(background, (0, 0))
-
-class ffSprites(pygame.sprite.Sprite):
-    def __init__(self, gameobj, filename='waterfall.png'):
-        # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
-        self.gameobj = gameobj
-        self.image, self.rect = load_image(filename)
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
-        self.rect.topleft = 10, 10
-
-    def changecolor(self, newcolor):
-        pxarray = pygame.PixelArray(self.image)
-        pxarray.replace((76, 69, 207), newcolor, distance=0)
-        self.image = pxarray.make_surface()
-
-    def resize(self, newX, newY):
-        self.image = pygame.transform.scale(self.image, (newX, newY))
-
-    def resizeProp(self, newScale):
-        x = self.image.get_width()
-        y = self.image.get_height()
-        self.resize(round(x*newScale), round(y*newScale))
-
-
-class Waterfall(ffSprites):
-    pass
-
-
-class Sponge(ffSprites):
-    pass
+def initUserEvents():
+    eventDict = {
+        'INTRO_CLICKED': pygame.event.custom_type(),
+    }
+    return eventDict
 
 
 class Game(object):
@@ -113,45 +24,103 @@ class Game(object):
     """
 
     def __init__(self):
+        # initializing the pygame engine
         pygame.init()
-#        displayFlags = pygame.FULLSCREEN | pygame.RESIZABLE
+        #        displayFlags = pygame.FULLSCREEN | pygame.RESIZABLE
+        # game in window mode and resizeable (later fullscreen mode too)
         displayFlags = pygame.RESIZABLE
+        # the resolution of 800x600 will only be the base and reference window size (perhaps a 16:9 would be better?)
+        # when resizing the window or using fullscreen in monitor's native mode the sprite sizes and positioning need
+        # to be automatically adjusted
         self.screen = pygame.display.set_mode((800, 600), flags=displayFlags)
+        # window program title (perhaps later something for version management?)
         pygame.display.set_caption('Farbenfall v0.1')
+        # initializing pygames clock system
         self.clock = pygame.time.Clock()
+        # an dictionary of userevents to communicate between different classes and scenes
+        self.eventDict = initUserEvents()
 
-        self.intro = Intro(self)
+        # scenes can have a function to check for mouse clicks like button clicks (see event loop)
+        self.checkMouseClick = None
+        # saving position when mouse button is down
+        self.mouseClickStartPos = None
 
-        sponge = Sponge(self, 'sponge.png')
-        sponge.resizeProp(0.25)
-#        w_generic = Waterfall(self)
-        w_blue = Waterfall(self, 'waterfall_blue.png')
-        w_blue.rect.topleft = 20, 20
+        # TODO: react on window resizing
+        self.background = pygame.Surface(self.screen.get_size()).convert()
+        self.background.fill((255, 255, 255))
+
+        self.intro = intro.Intro(self)
+
+        self.spritesDict = {}
+
+        colorBlock = block.Block(self, 'block.png')
+        colorBlock.changecolor((10, 210, 10))
+        colorBlock.resizeProp(0.15)
+        self.spritesDict['block'] = colorBlock
+
+        w_blue = waterfall.Waterfall(self, 'waterfall_blue.png')
+        w_blue.moveTo(20, 20)
         w_blue.resizeProp(0.5)
-        w_green = Waterfall(self, 'waterfall_green.png')
-        w_green.rect.topleft = 170, 20
+        w_green = waterfall.Waterfall(self, 'waterfall_green.png')
+        w_green.moveTo(170, 20)
         w_green.resizeProp(0.5)
-        w_red = Waterfall(self, 'waterfall_red.png')
-        w_red.rect.topleft = 320, 20
+        w_red = waterfall.Waterfall(self, 'waterfall_red.png')
+        w_red.moveTo(320, 20)
         w_red.resizeProp(0.5)
-        sponge.changecolor((10, 210, 10))
 
-        self.allWaterfallSprites = pygame.sprite.RenderPlain((sponge, w_blue, w_green, w_red))
+        self.allGameSprites = pygame.sprite.RenderPlain((colorBlock, w_blue, w_green, w_red))
+
+        self.allActiveSprites = pygame.sprite.RenderPlain()
 
     def run(self):
+        self.showIntro()
 
         while 1:
-            self.intro.render()
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
                 elif event.type == KEYDOWN and event.key == K_ESCAPE:
                     return
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouseClickStartPos = pygame.mouse.get_pos()
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    if self.checkMouseClick:
+                        self.checkMouseClick(event)
+                elif event.type == self.eventDict['INTRO_CLICKED']:
+                    if event.action == 'PLAY':
+                        self.showGame()
+                    elif event.action == 'ABOUT':
+                        self.showAbout()
 
-            self.allWaterfallSprites.update()
-            self.allWaterfallSprites.draw(self.screen)
+            self.screen.blit(self.background, (0, 0))
+            self.allActiveSprites.update()
+            self.allActiveSprites.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(60)
+
+    def resetScene(self):
+        self.checkMouseClick = None
+        self.allActiveSprites.empty()
+
+    def showIntro(self):
+        self.resetScene()
+        pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        self.allActiveSprites.add(self.intro)
+        self.checkMouseClick = self.intro.checkMouseClick
+
+    def showGame(self):
+        self.resetScene()
+        pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_HAND)
+        self.allActiveSprites = self.allGameSprites
+
+    def showAbout(self):
+        self.resetScene()
+        pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        # self.allActiveSprites = self.allGameSprites
+
+    def quitGame(self):
+        self.resetScene()
+        exit()
 
 
 if __name__ == "__main__":
