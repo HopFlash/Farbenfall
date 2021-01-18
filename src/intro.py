@@ -2,6 +2,8 @@ import pygame
 from pygame.constants import SRCALPHA
 from pygame.sprite import AbstractGroup
 
+from ffImageSprites import FFImageSprites
+
 
 class Intro(pygame.sprite.Sprite):
     def __init__(self, gameobj, *groups: AbstractGroup):
@@ -17,13 +19,12 @@ class Intro(pygame.sprite.Sprite):
 
         self.introTitle = IntroTitle(gameobj, self, self.myGroup)
         self.introButtons = [
-            IntroPlayButton(self.gameobj, self, 'Play', self.myGroup),
-            IntroAboutButton(self.gameobj, self, 'About', self.myGroup),
-            IntroQuitButton(self.gameobj, self, 'Quit', self.myGroup)
+            IntroPlayButton(self.gameobj, self, 'Play', 'intro_navigation_button-default.png', self.myGroup),
+            IntroAboutButton(self.gameobj, self, 'About', 'intro_navigation_button-default.png', self.myGroup),
+            IntroQuitButton(self.gameobj, self, 'Quit', 'intro_navigation_button-default.png', self.myGroup)
         ]
         for i, iButton in enumerate(self.introButtons):
-            iButton.rect.top = 500
-            iButton.rect.left = 400 + i * 150
+            iButton.moveTo(75 + i * 375, 400)
 
     def update(self, *args, **kwargs) -> None:
         self.image = pygame.Surface(self.gameobj.screen.get_size())
@@ -85,28 +86,29 @@ class IntroTitle(pygame.sprite.Sprite):
         for charOffsetX, textImage in introTextImages:
             self.image.blit(textImage, (charOffsetX, 0))
         self.rect.centerx = round(self.parent.rect.centerx)
-        self.rect.centery = round(self.parent.rect.centery)
+        self.rect.centery = round(self.parent.rect.centery) - 100
 
     def update(self):
         self.rect.centerx = round(self.parent.rect.centerx)
-        self.rect.centery = round(self.parent.rect.centery)
+        self.rect.centery = round(self.parent.rect.centery) - 100
 
 
-class IntroButton(pygame.sprite.Sprite):
-    def __init__(self, gameobj, parent, text, *groups: AbstractGroup):
-        super().__init__(*groups)
+class IntroButton(FFImageSprites):
+    def __init__(self, gameobj, parent, text, filename, *groups: AbstractGroup):
+        super().__init__(gameobj, filename, *groups)
         self.gameobj = gameobj
         self.parent = parent
         self.text = text
 
-        self.font = pygame.font.Font(None, 40)
+        self.font = pygame.font.Font('./data/BRLNSDB.TTF', 75)
 
-        self.image = pygame.Surface((100, 50), flags=SRCALPHA)
-        self.image.fill((0, 0, 255))
-        self.rect = self.image.get_rect()
-        textImage = self.font.render(self.text, True, (255, 255, 0))
+#        self.image = pygame.Surface((100, 50), flags=SRCALPHA)
+#        self.image.fill((0, 0, 255))
+#        self.rect = self.image.get_rect()
+        textImage = self.font.render(self.text, True, (255, 255, 255))
         textRect = textImage.get_rect()
         textRect.center = self.rect.center
+        textRect.centery = textRect.centery + 10
         self.image.blit(textImage, textRect)
 
 
