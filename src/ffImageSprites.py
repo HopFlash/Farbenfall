@@ -1,11 +1,13 @@
 import pygame
+from pygame.sprite import AbstractGroup
+
 import utils
 
 
 class FFImageSprites(pygame.sprite.Sprite):
-    def __init__(self, gameobj, filename):
+    def __init__(self, gameobj, filename, *groups: AbstractGroup):
         # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
+        pygame.sprite.Sprite.__init__(self, *groups)
         self.gameobj = gameobj
         self.image, self.rect = utils.load_image(filename)
         self.x = self.rect.x

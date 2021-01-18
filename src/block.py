@@ -3,8 +3,8 @@ import ffImageSprites
 
 
 class Block(ffImageSprites.FFImageSprites):
-    def __init__(self, gameobj, filename):
-        super().__init__(gameobj, filename)
+    def __init__(self, gameobj, filename, *groups):
+        super().__init__(gameobj, filename, *groups)
         self.attached = False
 
     def changecolor(self, newcolor):
