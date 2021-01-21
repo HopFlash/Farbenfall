@@ -22,8 +22,11 @@ class FFImageSprites(pygame.sprite.Sprite):
             self.moved = False
 
     def resize(self, newX, newY):
+        # remember the position
+        x, y = self.rect.center
         self.image = pygame.transform.scale(self.image, (newX, newY))
-        self.rect = self.image.get_rect()
+        # get new scaled rectangle at the same center position
+        self.rect = self.image.get_rect(center=(x, y))
         self.mask = pygame.mask.from_surface(self.image)
 
     def resizeProp(self, newScale):
