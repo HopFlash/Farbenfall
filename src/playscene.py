@@ -28,17 +28,19 @@ class Playscene(pygame.sprite.Sprite):
         # the waterfall that is actual coloring the block
         self.coloringWaterfall = None
 
-        w_blue = waterfall.Waterfall(self, (0, 0, 255), 'waterfall_blue.png', self.myGroup)
+        waterfallGroup = pygame.sprite.RenderPlain()
+        w_blue = waterfall.Waterfall(self, (0, 0, 255), 'waterfall_blue.png', self.myGroup, waterfallGroup)
         w_blue.moveTo(20, 20)
         w_blue.resizeProp(0.5)
-        w_green = waterfall.Waterfall(self, (0, 255, 0), 'waterfall_green.png', self.myGroup)
+        w_green = waterfall.Waterfall(self, (0, 255, 0), 'waterfall_green.png', self.myGroup, waterfallGroup)
         w_green.moveTo(170, 20)
         w_green.resizeProp(0.5)
-        w_red = waterfall.Waterfall(self, (255, 0, 0), 'waterfall_red.png', self.myGroup)
+        w_red = waterfall.Waterfall(self, (255, 0, 0), 'waterfall_red.png', self.myGroup, waterfallGroup)
         w_red.moveTo(320, 20)
         w_red.resizeProp(0.5)
 
         self.spritesDict['waterfalls'] = [w_blue, w_green, w_red]
+        self.spritesDict['waterfallGroup'] = waterfallGroup
 
     def update(self, *args, **kwargs) -> None:
         # background
@@ -67,12 +69,11 @@ class Playscene(pygame.sprite.Sprite):
 
     def checkBlockWaterfallCollisions(self):
         colorblock = self.spritesDict['block']
-        waterfallList = self.spritesDict['waterfalls']
-        for w in waterfallList:
-            if pygame.sprite.collide_rect(colorblock, w):
-                self.coloringWaterfall = w
-                return
-        self.coloringWaterfall = None
+        waterfallGroup = self.spritesDict['waterfallGroup']
+        blockCollideList = pygame.sprite.spritecollideany(colorblock, waterfallGroup, collided=pygame.sprite.collide_mask)
+        if blockCollideList:
+            self.coloringWaterfall = blockCollideList
+            return
 
     def updateBlockColoring(self):
         if self.coloringWaterfall:

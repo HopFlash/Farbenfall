@@ -10,6 +10,7 @@ class FFImageSprites(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, *groups)
         self.gameobj = gameobj
         self.image, self.rect = utils.load_image(filename)
+        self.mask = pygame.mask.from_surface(self.image)
         self.x = self.rect.x
         self.y = self.rect.y
         self.moved = True
@@ -23,6 +24,7 @@ class FFImageSprites(pygame.sprite.Sprite):
     def resize(self, newX, newY):
         self.image = pygame.transform.scale(self.image, (newX, newY))
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
 
     def resizeProp(self, newScale):
         x = self.image.get_width()
