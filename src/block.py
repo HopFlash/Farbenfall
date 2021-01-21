@@ -1,4 +1,5 @@
 import pygame
+
 from ffImageSprites import FFImageSprites
 
 
@@ -6,11 +7,14 @@ class Block(FFImageSprites):
     def __init__(self, gameobj, filename, *groups):
         super().__init__(gameobj, filename, *groups)
         self.attached = False
+        self.referencePxarray = pygame.PixelArray(self.image)
 
     def changecolor(self, newcolor):
-        pxarray = pygame.PixelArray(self.image)
+        pxarray = pygame.PixelArray(self.referencePxarray.make_surface())
         pxarray.replace((255, 255, 255), newcolor, distance=0)
-        self.image = pxarray.make_surface()
+        width, height = self.image.get_size()
+        self.image = pxarray.surface
+        self.resize(width, height)
 
     def update(self):
         super().update()
