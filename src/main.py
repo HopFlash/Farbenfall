@@ -49,6 +49,7 @@ class Game(object):
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill((255, 255, 255))
 
+        self.fps = Fps(self)
         self.intro = Intro(self)
         self.playfield = Playscene(self)
 
@@ -74,10 +75,14 @@ class Game(object):
                     self.sceneEventloop(event)
 
             self.screen.blit(self.background, (0, 0))
+            self.allActiveSprites.add(self.fps)
             self.allActiveSprites.update()
             self.allActiveSprites.draw(self.screen)
             pygame.display.flip()
-            self.clock.tick(60)
+
+            # showing FPS
+            self.fps.setFps(self.clock.get_fps())
+            self.clock.tick(600)
 
     def resetScene(self):
         self.sceneEventloop = None
