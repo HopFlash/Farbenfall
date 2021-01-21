@@ -30,14 +30,14 @@ class Playscene(pygame.sprite.Sprite):
 
         waterfallGroup = pygame.sprite.RenderPlain()
         w_blue = waterfall.Waterfall(self, (0, 0, 255), 'waterfall_blue.png', self.myGroup, waterfallGroup)
-        w_blue.moveTo(20, 20)
         w_blue.resizeProp(0.5)
+        w_blue.moveTo(20, 0)
         w_green = waterfall.Waterfall(self, (0, 255, 0), 'waterfall_green.png', self.myGroup, waterfallGroup)
-        w_green.moveTo(170, 20)
         w_green.resizeProp(0.5)
+        w_green.moveTo(170, 0)
         w_red = waterfall.Waterfall(self, (255, 0, 0), 'waterfall_red.png', self.myGroup, waterfallGroup)
-        w_red.moveTo(320, 20)
         w_red.resizeProp(0.5)
+        w_red.moveTo(320, 0)
 
         self.spritesDict['waterfalls'] = [w_blue, w_green, w_red]
         self.spritesDict['waterfallGroup'] = waterfallGroup

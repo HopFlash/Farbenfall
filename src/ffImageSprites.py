@@ -11,15 +11,6 @@ class FFImageSprites(pygame.sprite.Sprite):
         self.gameobj = gameobj
         self.image, self.rect = utils.load_image(filename)
         self.mask = pygame.mask.from_surface(self.image)
-        self.x = self.rect.x
-        self.y = self.rect.y
-        self.moved = True
-
-    def update(self):
-        super().update()
-        if self.moved:
-            self.rect.topleft = self.x, self.y
-            self.moved = False
 
     def resize(self, newX, newY):
         # remember the position
@@ -33,7 +24,20 @@ class FFImageSprites(pygame.sprite.Sprite):
         x, y = self.image.get_size()
         self.resize(round(x * newScale), round(y * newScale))
 
+    # default moveTo moves to new topleft position
     def moveTo(self, newX, newY):
-        self.x = newX
-        self.y = newY
-        self.moved = True
+        self.moveToTopLeft(newX, newY)
+
+    # move to new topleft position
+    def moveToTopLeft(self, newX, newY):
+        # calculate the difference to move it
+        moveX = newX - self.rect.x
+        moveY = newY - self.rect.y
+        self.rect.move_ip(moveX, moveY)
+
+    # move to new center position
+    def moveToCenter(self, newX, newY):
+        # calculate the difference to move it
+        moveX = newX - self.rect.centerx
+        moveY = newY - self.rect.centery
+        self.rect.move_ip(moveX, moveY)
