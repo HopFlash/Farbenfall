@@ -28,13 +28,13 @@ class Playscene(pygame.sprite.Sprite):
         # the waterfall that is actual coloring the block
         self.coloringWaterfall = None
 
-        w_blue = waterfall.Waterfall(self, (255, 0, 0), 'waterfall_blue.png', self.myGroup)
+        w_blue = waterfall.Waterfall(self, (0, 0, 255), 'waterfall_blue.png', self.myGroup)
         w_blue.moveTo(20, 20)
         w_blue.resizeProp(0.5)
         w_green = waterfall.Waterfall(self, (0, 255, 0), 'waterfall_green.png', self.myGroup)
         w_green.moveTo(170, 20)
         w_green.resizeProp(0.5)
-        w_red = waterfall.Waterfall(self, (0, 0, 255), 'waterfall_red.png', self.myGroup)
+        w_red = waterfall.Waterfall(self, (255, 0, 0), 'waterfall_red.png', self.myGroup)
         w_red.moveTo(320, 20)
         w_red.resizeProp(0.5)
 
