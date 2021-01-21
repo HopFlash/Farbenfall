@@ -53,7 +53,7 @@ class Game(object):
         self.intro = Intro(self)
         self.playfield = Playscene(self)
 
-        self.allActiveSprites = pygame.sprite.RenderPlain()
+        self.allActiveSprites = pygame.sprite.LayeredUpdates()
 
     def run(self):
         self.showIntro()
