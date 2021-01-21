@@ -10,9 +10,11 @@ class Intro(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.gameobj = gameobj
 
-        self.image = pygame.Surface(self.gameobj.screen.get_size())
-        self.image = self.image.convert()
-        self.image.fill((255, 255, 255))
+        # init background
+        self.backgroundImg = pygame.Surface(self.gameobj.screen.get_size())
+        self.backgroundImg = self.backgroundImg.convert()
+        self.backgroundImg.fill((255, 255, 255))
+        self.image = self.backgroundImg.copy()
         self.rect = self.image.get_rect()
 
         self.myGroup = pygame.sprite.RenderPlain()
@@ -27,12 +29,8 @@ class Intro(pygame.sprite.Sprite):
             iButton.moveTo(75 + i * 375, 400)
 
     def update(self, *args, **kwargs) -> None:
-        self.image = pygame.Surface(self.gameobj.screen.get_size())
-        self.image = self.image.convert()
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect()
-
         self.myGroup.update()
+        self.myGroup.clear(self.image, self.backgroundImg)
         self.myGroup.draw(self.image)
 
     def checkMouseClick(self, event):

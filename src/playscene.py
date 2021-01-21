@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import AbstractGroup
 
 import block
+import utils
 import waterfall
 
 
@@ -10,11 +11,9 @@ class Playscene(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.gameobj = gameobj
 
-        # background
-        self.image = pygame.Surface(self.gameobj.screen.get_size())
-        self.image = self.image.convert()
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect()
+        # loading background
+        self.image, self.rect = utils.load_image('background.png')
+        self.backgroundImg = self.image.copy()
 
         self.myGroup = pygame.sprite.RenderPlain()
 
@@ -43,13 +42,10 @@ class Playscene(pygame.sprite.Sprite):
         self.spritesDict['waterfallGroup'] = waterfallGroup
 
     def update(self, *args, **kwargs) -> None:
-        # background
-        self.image = pygame.Surface(self.gameobj.screen.get_size())
-        self.image = self.image.convert()
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect()
-
         self.myGroup.update()
+        # background
+        self.myGroup.clear(self.image, self.backgroundImg)
+        # all sprites
         self.myGroup.draw(self.image)
 
         self.checkBlockWaterfallCollisions()
