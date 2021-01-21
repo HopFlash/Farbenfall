@@ -70,10 +70,8 @@ class Playscene(pygame.sprite.Sprite):
     def checkBlockWaterfallCollisions(self):
         colorblock = self.spritesDict['block']
         waterfallGroup = self.spritesDict['waterfallGroup']
-        blockCollideList = pygame.sprite.spritecollideany(colorblock, waterfallGroup, collided=pygame.sprite.collide_mask)
-        if blockCollideList:
-            self.coloringWaterfall = blockCollideList
-            return
+        collidedWaterfall = pygame.sprite.spritecollideany(colorblock, waterfallGroup, collided=pygame.sprite.collide_mask)
+        self.coloringWaterfall = collidedWaterfall
 
     def updateBlockColoring(self):
         if self.coloringWaterfall:
