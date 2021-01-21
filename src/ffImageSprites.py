@@ -27,8 +27,7 @@ class FFImageSprites(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
     def resizeProp(self, newScale):
-        x = self.image.get_width()
-        y = self.image.get_height()
+        x, y = self.image.get_size()
         self.resize(round(x * newScale), round(y * newScale))
 
     def moveTo(self, newX, newY):
