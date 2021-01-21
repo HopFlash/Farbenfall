@@ -6,8 +6,9 @@ https://itch.io/jam/my-first-game-jam-winter-2021
 import pygame
 from pygame.locals import QUIT, KEYDOWN, K_ESCAPE
 
-import intro
-import playscene
+from intro import Intro
+from playscene import Playscene
+from fps import Fps
 
 
 def initUserEvents():
@@ -48,8 +49,8 @@ class Game(object):
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill((255, 255, 255))
 
-        self.intro = intro.Intro(self)
-        self.playfield = playscene.Playscene(self)
+        self.intro = Intro(self)
+        self.playfield = Playscene(self)
 
         self.allActiveSprites = pygame.sprite.RenderPlain()
 
